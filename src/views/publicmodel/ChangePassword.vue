@@ -117,11 +117,8 @@ export default {
     },
     async onSubmit() {
       var that = this
-      var id = sessionStorage.getItem("id");
-      console.log(id)
-      var i = new Number(id)
-      const data = await Api.changePassWord(i, sessionStorage.getItem("username"), that.passform.password, that.passform.newpassword, that.passform.checkpassword);
-      if (data.status==666){
+      const data = await Api.changePassWord(that.passform.password, that.passform.newpassword, that.passform.checkpassword);
+      if (String(data.code)=='1'){
         that.$message.success(data.msg);
         localStorage.clear();
         sessionStorage.clear();

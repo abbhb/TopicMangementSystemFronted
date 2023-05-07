@@ -2,37 +2,23 @@
   <div class="home">
     <header class="header">
       <div class="left">
-        超级管理后台
+        毕业设计题目管理系统
         <el-button
-            @click="onMenuCollapse"
-            circle
-            :icon="menuCollapse? 'el-icon-s-unfold' : 'el-icon-s-fold'"
+          @click="onMenuCollapse"
+          circle
+          :icon="menuCollapse? 'el-icon-s-unfold' : 'el-icon-s-fold'"
         ></el-button>
       </div>
       <div class="right" style="display: flex;flex-direction: row;align-items: center;">
-
-        <!--        <span>-->
-        <!--            <el-dropdown @command="onLogOut">-->
-        <!--                <span class="el-dropdown-link">-->
-        <!--                    权限切换-->
-        <!--                    <i class="el-icon-arrow-down el-icon&#45;&#45;right"></i>-->
-        <!--                </span>-->
-        <!--                <el-dropdown-menu slot="dropdown">-->
-        <!--                    <el-dropdown-item disabled>权限一</el-dropdown-item>-->
-        <!--                    <el-dropdown-item divided>权限二</el-dropdown-item>-->
-        <!--                </el-dropdown-menu>-->
-        <!--            </el-dropdown>-->
-        <!--        </span>-->
         <div class="warp" style="margin-right: auto;">
           <el-dropdown>
                 <span class="el-dropdown-link">
-                    <el-avatar shape="circle" :size="40"  :src="userphoto" />
+                    <el-avatar shape="circle" :size="40"  src="https://img.zcool.cn/community/019ce65548c7f80000019ae959f8f4.jpg@1280w_1l_2o_100sh.jpg" />
                   <!--                    <i class="el-icon-arrow-down el-icon&#45;&#45;right"></i>-->
                 </span>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item>{{name}}</el-dropdown-item>
               <el-dropdown-item @click.native="onLogOut">退出登录</el-dropdown-item>
-              <el-dropdown-item>切换账号</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </div>
@@ -43,22 +29,22 @@
       <div class="tac">
         <div class="col1">
           <el-menu
-              default-active="2"
-              class="el-menu-vertical-demo"
-              @open="handleOpen"
-              @close="handleClose"
-              :collapse="menuCollapse"
-              :unique-opened="true"
-              :default-openeds="defaultUnfoldedMenu"
-              select="1-1"
-              background-color="#545c64"
-              text-color="#fff"
-              active-text-color="#ffd04b"
+            default-active="2"
+            class="el-menu-vertical-demo"
+            @open="handleOpen"
+            @close="handleClose"
+            :collapse="menuCollapse"
+            :unique-opened="true"
+            :default-openeds="defaultUnfoldedMenu"
+            select="1-1"
+            background-color="#545c64"
+            text-color="#fff"
+            active-text-color="#ffd04b"
           >
             <div v-for="(item) in menuData " :key="item.index">
               <el-submenu
-                  v-if="item.childList && item.childList.length > 0"
-                  :index="item.index"
+                v-if="item.childList && item.childList.length > 0"
+                :index="item.index"
               >
                 <template slot="title">
                   <i :class="item.iconClassName"></i>
@@ -66,19 +52,19 @@
                   <!-- <span slot="title">{{ item.oneMenuName }}</span> -->
                 </template>
                 <el-menu-item
-                    v-for="(item1) in item.childList"
-                    :key="item1.index"
-                    :index="item1.index"
-                    :routerName="item1.routerName"
-                    @click="onClickMenu(item1)"
+                  v-for="(item1) in item.childList"
+                  :key="item1.index"
+                  :index="item1.index"
+                  :routerName="item1.routerName"
+                  @click="onClickMenu(item1)"
                 >{{ item1.optionName }}</el-menu-item>
               </el-submenu>
               <el-menu-item
-                  v-else
-                  :index="item.index"
-                  :disabled="item.disabled"
-                  :routerName="item.routerName"
-                  @click="onClickMenu(item)"
+                v-else
+                :index="item.index"
+                :disabled="item.disabled"
+                :routerName="item.routerName"
+                @click="onClickMenu(item)"
               >
                 <i :class="item.iconClassName"></i>
                 <span slot="title">{{ !menuCollapse? item.optionName : '' }}</span>
@@ -89,13 +75,13 @@
         <div class="col2">
           <header class="col2_header">
             <el-tag
-                v-for="tag in tags"
-                :key="tag.routerName"
-                closable
-                @close="close(tag)"
-                @click="clickTag(tag)"
-                :type="tag.type?tag.type:'info'"
-                class="item"
+              v-for="tag in tags"
+              :key="tag.routerName"
+              closable
+              @close="close(tag)"
+              @click="clickTag(tag)"
+              :type="tag.type?tag.type:'info'"
+              class="item"
             >{{tag.name}}</el-tag>
           </header>
           <div class="warp">
@@ -108,17 +94,17 @@
 </template>
 
 <script>
-import { menuData } from "./mencCofig.js";
+import { menuDataAdmin, menuDataStudent, menuDataTeacher } from "./mencCofig.js";
 import * as Api from "@/api/login";
 
 export default {
-  name:'Student',
+  name:'index',
   data() {
     return {
       // 菜单配置
-      menuData,
+      menuData:[],
       menuCollapse: false, //是否水平折叠收起菜单
-      defaultUnfoldedMenu: [menuData[0].index], // 默认展开第一项
+      defaultUnfoldedMenu: [], // 默认展开第一项
       tags: [],
       userphoto:'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
       showPhotoMenu:false,
@@ -126,9 +112,17 @@ export default {
     };
   },
   created() {
-    this.defaultUnfoldedMenu = [
-      localStorage.getItem("defaultUnfoldedMenu")
-    ];
+    if (sessionStorage.getItem('type')==='admin'){
+      this.menuData = menuDataAdmin
+      this.defaultUnfoldedMenu = [menuDataAdmin[0].index]
+    }else if (sessionStorage.getItem('type')==='teacher'){
+      this.menuData = menuDataTeacher
+      this.defaultUnfoldedMenu = [menuDataTeacher[0].index]
+    }else if (sessionStorage.getItem('type')==='student'){
+      this.menuData = menuDataStudent
+      this.defaultUnfoldedMenu = [menuDataStudent[0].index]
+    }
+
     this.menuCollapse = JSON.parse(localStorage.getItem("menuCollapse"));
     this.tags = JSON.parse(localStorage.getItem("tagsNavList")) || [];
     this.name = sessionStorage.getItem("name");
@@ -223,15 +217,11 @@ export default {
       const data = await Api.loginOut()
       console.log(data)
 
-      if (data.status===902){
+      if (String(data.code)==='900'){
         this.$message.success(data.msg);
         sessionStorage.clear();
         localStorage.clear();
         this.$router.push("login");
-      }
-      else if (data.status===701){
-        this.$message.error(data.msg);
-
       }
 
     },

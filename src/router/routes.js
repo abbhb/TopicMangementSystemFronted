@@ -5,19 +5,20 @@ import test from "../views/publicmodel/test.vue";
 import test1 from "../views/publicmodel/test1.vue";
 import test2 from "../views/publicmodel/test2.vue";
 import test3 from "../views/publicmodel/test3.vue";
-import Admin from "@/views/Admin/Admin";
 import NotFound from "@/views/NotFound";
 import UserInfo from "@/views/publicmodel/UserInfo";
 import MDCourse from "@/views/publicmodel/MDCourse";
 
 
-import TimeTableForAdmin from "@/views/Admin/TimeTableForAdmin";
 import ChangePassword from "@/views/publicmodel/ChangePassword";
 
-import Teacher from "@/views/Teacher/Teacher";
-import TimeTableForTeacher from "@/views/Teacher/TimeTableForTeacher";
-import Student from "@/views/Student/Student";
-import Timetable from "@/views/table/Timetable";
+import index from "@/views/index";
+import EditUser from "@/views/Admin/EditUser.vue";
+import EditCollege from "@/views/Admin/EditCollege.vue";
+import EditMajor from "@/views/Admin/EditMajor.vue";
+import MyTopic from "@/views/Student/MyTopic.vue";
+import TopicT from "@/views/Teacher/TopicT.vue";
+import Topic from "@/views/Admin/Topic.vue";
 
 
 export default [
@@ -58,12 +59,13 @@ export default [
 		}
 	},
 	{
-		path: '/admin',
-		name: 'admin',
-		component: Admin,
+		path: '/index',
+		name: 'index',
+		component: index,
 		meta: {
 			requireAuth: true,
-			roles:['admin']
+			roles:['admin','student','teacher','user']
+
 		},
 		children: [
 			{
@@ -72,7 +74,8 @@ export default [
 				component: UserInfo,
 				meta:{
 					requireAuth: true,
-					roles:['admin']
+					roles:['admin','student','teacher','user']
+
 				}
 			},
 			{
@@ -81,13 +84,68 @@ export default [
 				component: ChangePassword,
 				meta: {
 					requireAuth: true,
-					roles: ['admin']
+					roles:['admin','student','teacher','user']
+
 				}
 			},
 			{
 				path: 'MDCourse',
 				name: 'MDCourseForAdmin',
 				component: MDCourse,
+				meta:{
+					requireAuth: true,
+					roles:['admin']
+				}
+			},
+			{
+				path: 'EditUser',
+				name: 'EditUser',
+				component: EditUser,
+				meta:{
+					requireAuth: true,
+					roles:['admin']
+				}
+			},
+			{
+				path: 'EditCollege',
+				name: 'EditCollege',
+				component: EditCollege,
+				meta:{
+					requireAuth: true,
+					roles:['admin']
+				}
+			},
+			{
+				path: 'EditMajor',
+				name: 'EditMajor',
+				component: EditMajor,
+				meta:{
+					requireAuth: true,
+					roles:['admin']
+				}
+			},
+			{
+				path: 'MyTopic',
+				name: 'MyTopic',
+				component: MyTopic,
+				meta:{
+					requireAuth: true,
+					roles:['student']
+				}
+			},
+			{
+				path: 'TopicT',
+				name: 'TopicT',
+				component: TopicT,
+				meta:{
+					requireAuth: true,
+					roles:['teacher']
+				}
+			},
+			{
+				path: 'Topic',
+				name: 'Topic',
+				component: Topic,
 				meta:{
 					requireAuth: true,
 					roles:['admin']
@@ -120,15 +178,7 @@ export default [
 					roles:['admin']
 				}
 			},
-			{
-				path: 'TimeTableForAdmin',
-				name: 'TimeTableForAdmin',
-				component: TimeTableForAdmin,
-				meta:{
-					requireAuth: true,
-					roles:['admin']
-				}
-			},
+
 			{
 				path: 'test3',
 				name: 'test3',
@@ -136,163 +186,6 @@ export default [
 				meta:{
 					requireAuth: true,
 					roles:['admin']
-				}
-			},
-		]
-	},
-	{
-		path: '/teacher',
-		name: 'teacher',
-		component: Teacher,
-		meta: {
-			requireAuth: true,
-			roles:['teacher']
-		},
-		children: [
-			{
-				path: 'UserInfo',
-				name: 'UserInfoForTeacher',
-				component: UserInfo,
-				meta:{
-					requireAuth: true,
-					roles:['teacher']
-				}
-			},
-			{
-				path: 'changepassword',
-				name:'ChangePasswordForTeacher',
-				component: ChangePassword,
-				meta: {
-					requireAuth: true,
-					roles: ['teacher']
-				}
-			},
-			{
-				path: 'MDCourse',
-				name: 'MDCourseForTeacher',
-				component: MDCourse,
-				meta:{
-					requireAuth: true,
-					roles:['teacher']
-				}
-			},
-			{
-				path: 'test',
-				name: 'test',
-				component: test,
-				meta:{
-					requireAuth: true,
-					roles:['student','teacher','user']
-				}
-			},
-			{
-				path: 'test1',
-				name: 'test1',
-				component: test1,
-				meta:{
-					requireAuth: true,
-					roles:['teacher']
-				}
-			},
-			{
-				path: 'test2',
-				name: 'test2ForTeacher',
-				component: test2,
-				meta:{
-					requireAuth: true,
-					roles:['teacher']
-				}
-			},
-			{
-				path: 'TimeTableForTeacher',
-				name: 'TimeTableForTeacher',
-				component: TimeTableForTeacher,
-				meta:{
-					requireAuth: true,
-					roles:['teacher']
-				}
-			},
-			{
-				path: 'test3',
-				name: 'test3ForTeacher',
-				component: test3,
-				meta:{
-					requireAuth: true,
-					roles:['teacher']
-				}
-			},
-		]
-	},
-	{
-		path: '/student',
-		name: 'student',
-		component: Student,
-		meta: {
-			requireAuth: true,
-			roles:['student']
-		},
-		children: [
-			{
-				path: 'UserInfo',
-				name: 'UserInfoForStudent',
-				component: UserInfo,
-				meta:{
-					requireAuth: true,
-					roles:['student']
-				}
-			},
-			{
-				path: 'changepassword',
-				name:'ChangePasswordForStudent',
-				component: ChangePassword,
-				meta: {
-					requireAuth: true,
-					roles: ['student']
-				}
-			},
-			{
-				path: 'test',
-				name: 'test',
-				component: test,
-				meta:{
-					requireAuth: true,
-					roles:['student','teacher','user']
-				}
-			},
-			{
-				path: 'test1',
-				name: 'test1',
-				component: test1,
-				meta:{
-					requireAuth: true,
-					roles:['teacher']
-				}
-			},
-			{
-				path: 'test2',
-				name: 'test2ForStudent',
-				component: test2,
-				meta:{
-					requireAuth: true,
-					roles:['student']
-				}
-			},
-			{
-				path: 'TimeTableForStudent',
-				name: 'TimeTableForStudent',
-				component: Timetable,
-				meta:{
-					requireAuth: true,
-					roles:['student']
-				}
-			},
-			{
-				path: 'test3',
-				name: 'test3ForStudent',
-				component: test3,
-				meta:{
-					requireAuth: true,
-					roles:['student']
 				}
 			},
 		]

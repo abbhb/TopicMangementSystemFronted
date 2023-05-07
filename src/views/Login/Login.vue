@@ -2,8 +2,7 @@
     <div class="login">
         <div class="shade">
             <header class="header">
-                <img class="logo" src="../../assets/logo.png" />
-                某某科技公司
+                毕业设计题目管理系统
             </header>
             <article class="article">
                 <h1>登录界面</h1>
@@ -43,8 +42,6 @@ export default {
       if (localStorage.getItem("token")){
         sessionStorage.setItem("token",localStorage.getItem("token"))
       }
-        // this.onSignIn();
-        // this.onWebSocket()
       this.checkToken()
     },
 
@@ -54,98 +51,66 @@ export default {
         async onSignIn() {
           var that = this
           const data = await Api.login(that.form.userName, that.form.userPwd);
-          if (data.status === 200 && data.data.token !== '') {
+          if (String(data.code) === '1' && data.data.tgc !== '') {
             that.$message.success(data.msg);
-            localStorage.setItem("token", data.data.token);
-            sessionStorage.setItem("token", data.data.token);
+            localStorage.setItem("token", data.data.tgc);
+              localStorage.setItem("userInfo",JSON.stringify(data.data))
+            sessionStorage.setItem("token", data.data.tgc);
             sessionStorage.setItem("id", data.data.id);
             sessionStorage.setItem("name", data.data.name);
-            sessionStorage.setItem("currentTerm", "2022秋季");
-            console.log(data.data.dept)
-            if (data.data.dept === 1) {
+            console.log(data.data.permission)
+            if (String(data.data.permission) === '1') {
               sessionStorage.setItem("type", "admin")
               console.log("admin")
-            } else if (data.data.dept === 2) {
+            } else if (String(data.data.permission) === '2') {
+              sessionStorage.setItem("type", "admin")
+              console.log("admin")
+            } else if (String(data.data.permission) === '3') {
               sessionStorage.setItem("type", "teacher")
               console.log("teacher")
-
-            } else if (data.data.dept === 3) {
+            } else if (String(data.data.permission) === '4') {
               sessionStorage.setItem("type", "student")
               console.log("student")
-
-            } else if (data.data.dept === 4) {
-              sessionStorage.setItem("type", "user")
-              console.log("user")
             }
             sessionStorage.setItem("age", data.data.age)
-            sessionStorage.setItem("gender", data.data.gender)
-            sessionStorage.setItem("userphoto", data.data.userphoto)
             sessionStorage.setItem("username", data.data.username)
-            sessionStorage.setItem("email", data.data.email)
-            sessionStorage.setItem("registerTime", data.data.registerTime)
-            sessionStorage.setItem("lastModificationTime", data.data.lastModificationTime)
-            that.gotoByDept(data.data.dept)
-
+            sessionStorage.setItem("sex", data.data.sex)
+              router.push({name:'index'})
           } else {
             that.$message.error(data.msg);
           }
-          // reqLogin()
-          //     .then(res => {
-          //         console.log(res);
-          //         // localStorage.setItem("token", res.token);
-          //     })
-          //     .catch(err => {
-          //         console.log("登录失败", err);
-          //     });
 
-          // this.$router.push({name: "Admin"});//需要根据权限跳转，还没写完
-        },
-        gotoByDept(dept){
-          if (dept === 1) {
-            router.push({name:'admin'})
-          } else if (dept === 2) {
-            router.push({name:'teacher'})
-          } else if (dept === 3) {
-            router.push({name:'student'})
-
-          } else if (dept === 4) {
-            router.push({name:'user'})
-
-          }
         },
         async checkToken() {
-          var that = this
-          const data = await Api.checkToken()
-          if (data.status === 200 && data.data.token !== '') {
-            that.$message.success(data.msg);
-            sessionStorage.setItem("id", data.data.id);
-            sessionStorage.setItem("name", data.data.name);
-            sessionStorage.setItem("currentTerm", "2022秋季");
-            if (data.data.dept === 1) {
-              sessionStorage.setItem("type", "admin")
-            } else if (data.data.dept === 2) {
-              sessionStorage.setItem("type", "teacher")
-
-            } else if (data.data.dept === 3) {
-              sessionStorage.setItem("type", "student")
-            } else if (data.data.dept === 4) {
-              sessionStorage.setItem("type", "user")
+            const res = await Api.checkToken()
+            if (String(res.code) === '1') {
+                this.$message.success(res.msg);
+                localStorage.setItem("userInfo",JSON.stringify(res.data))
+                sessionStorage.setItem("id", res.data.id);
+                sessionStorage.setItem("name", res.data.name);
+                console.log(res.data.permission)
+                if (String(res.data.permission) === '1') {
+                    sessionStorage.setItem("type", "admin")
+                    console.log("admin")
+                } else if (String(res.data.permission) === '2') {
+                    sessionStorage.setItem("type", "admin")
+                    console.log("admin")
+                } else if (String(res.data.permission) === '3') {
+                    sessionStorage.setItem("type", "teacher")
+                    console.log("teacher")
+                } else if (String(res.data.permission) === '4') {
+                    sessionStorage.setItem("type", "student")
+                    console.log("student")
+                }
+                sessionStorage.setItem("age", res.data.age)
+                sessionStorage.setItem("username", res.data.username)
+                sessionStorage.setItem("sex", res.data.sex)
+                router.push({name:'index'})
+            } else {
+                this.$message.error(res.msg);
             }
-            sessionStorage.setItem("age", data.data.age)
-            sessionStorage.setItem("userphoto", data.data.userphoto)
 
-            sessionStorage.setItem("gender", data.data.gender)
-            sessionStorage.setItem("username", data.data.username)
-            sessionStorage.setItem("email", data.data.email)
-            sessionStorage.setItem("registerTime", data.data.registerTime)
-            sessionStorage.setItem("lastModificationTime", data.data.lastModificationTime)
-            // router.push('/admin')
-            this.gotoByDept(data.data.dept)
-          } else {
-            that.$message.error(data.msg);
-          }
         }
-
     }
 };
 </script>

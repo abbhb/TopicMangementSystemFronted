@@ -7,9 +7,7 @@ export function inject(service) {
         (config) => {
             // console.log(config, 'config')
             config.headers['Content-Type'] = 'application/json' // 关键所在
-            config.headers.Authorization = sessionStorage.getItem("token")
-            // console.log(sessionStorage.getItem("token"))
-            // 可以进行token验证
+
             return config;
         },
         (error) => {

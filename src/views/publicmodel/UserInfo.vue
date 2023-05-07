@@ -9,7 +9,7 @@
         <el-input v-model="form.name" />
       </el-form-item>
       <el-form-item :rules="[{ required: true, message: '性别 is required' },]" label="性别">
-        <el-select v-model="form.gender" placeholder="请选择你的性别">
+        <el-select v-model="form.sex" placeholder="请选择你的性别">
           <el-option label="男" value="男" />
           <el-option label="女" value="女" />
         </el-select>
@@ -21,14 +21,14 @@
         <el-input type="number" v-model="form.age" />
       </el-form-item>
       <el-form-item   :rules="[
-        { required: true, message: 'email is required' },
-      ]"  label="email">
-        <el-input v-model="form.email" />
+        { required: true, message: 'phone is required' },
+      ]"  label="手机号">
+        <el-input v-model="form.phone" />
       </el-form-item>
 
 
       <el-form-item>
-        <el-button type="primary" @click="onSubmit" :disabled="(form_serve.age === form.age)&&(form_serve.name === form.name)&&(form_serve.gender === form.gender)&&(form_serve.email === form.email) ? true:false">更新</el-button>
+        <el-button type="primary" @click="onSubmit" :disabled="(form_serve.age === form.age)&&(form_serve.name === form.name)&&(form_serve.sex === form.sex)&&(form_serve.phone === form.phone) ? true:false">更新</el-button>
         <el-button @click="reWrite">重置</el-button>
       </el-form-item>
     </el-form>
@@ -48,43 +48,47 @@ export default {
       form:{
         username:'',
         name: '',
-        gender: '',
+        sex: '',
         age: 1,
-        email:'',
+        phone:'',
       },
       form_serve:{
         username:'',
         name: '',
-        gender: '',
+        sex: '',
         age: 1,
-        email:'',
-      }
+        phone:'',
+      },
+      userInfo:{},
     };
   },
   created() {
-    if (sessionStorage.name){
-      this.form_serve.name = sessionStorage.name
-      this.form.name = sessionStorage.name
+    if (localStorage.getItem('userInfo')){
+      this.userInfo = JSON.parse(localStorage.getItem('userInfo'))
+    }
+    if (this.userInfo.name){
+      this.form_serve.name = this.userInfo.name
+      this.form.name = this.userInfo.name
 
     }
-    if (sessionStorage.username){
-      this.form_serve.username = sessionStorage.username
-      this.form.username = sessionStorage.username
+    if (this.userInfo.username){
+      this.form_serve.username = this.userInfo.username
+      this.form.username = this.userInfo.username
 
     }
-    if (sessionStorage.gender){
-      this.form_serve.gender = sessionStorage.gender
-      this.form.gender = sessionStorage.gender
+    if (this.userInfo.sex){
+      this.form_serve.sex = this.userInfo.sex
+      this.form.sex = this.userInfo.sex
 
     }
-    if (sessionStorage.age){
-      this.form_serve.age = sessionStorage.age
-      this.form.age = sessionStorage.age
+    if (this.userInfo.age){
+      this.form_serve.age = this.userInfo.age
+      this.form.age = this.userInfo.age
 
     }
-    if (sessionStorage.email){
-      this.form_serve.email = sessionStorage.email
-      this.form.email = sessionStorage.email
+    if (this.userInfo.phone){
+      this.form_serve.phone = this.userInfo.phone
+      this.form.phone = this.userInfo.phone
 
     }
   },
@@ -96,52 +100,51 @@ export default {
       if (sessionStorage.username){
         this.form.username = this.form_serve.username
       }
-      if (sessionStorage.gender){
-        this.form.gender = this.form_serve.gender
+      if (sessionStorage.sex){
+        this.form.sex = this.form_serve.sex
       }
       if (sessionStorage.age){
         this.form.age = this.form_serve.age
       }
-      if (sessionStorage.email){
-        this.form.email = this.form_serve.email
+      if (sessionStorage.phone){
+        this.form.phone = this.form_serve.phone
       }
     },
     async onSubmit() {
-      var that = this
-      const data = await Api.updataforuser(that.form.name, that.form.age, that.form.gender, that.form.email);
-      if (data.status===200){
-        that.$message.success(data.msg);
-        that.form_serve.email = that.form.email;
-        that.form_serve.age = that.form.age;
-        that.form_serve.name = that.form.name;
-        that.form_serve.gender = that.form.gender;
-
-
+      let data = {}
+      data = this.form
+      const res = await Api.updataUserSelf(data);
+      if (String(res.code)==='1'){
+        this.$message.success(res.msg);
+        this.form_serve.phone = this.form.phone;
+        this.form_serve.age = this.form.age;
+        this.form_serve.name = this.form.name;
+        this.form_serve.sex = this.form.sex;
         const datas = await Api.checkToken()
-        if (datas.status === 200 && datas.data.token !== '') {
-          that.$message.success(datas.msg);
+        if (String(res.code)==='1') {
+          this.$message.success(datas.msg);
+          localStorage.setItem("userInfo",JSON.stringify(datas.data))
+
           sessionStorage.setItem("id", datas.data.id);
           sessionStorage.setItem("name", datas.data.name);
-          sessionStorage.setItem("currentTerm", "2022秋季");
-          if (datas.data.dept === 1) {
+          if (datas.data.permission === 1) {
             sessionStorage.setItem("type", "admin")
-          } else if (datas.data.dept === 2) {
+          } else if (datas.data.permission === 2) {
             sessionStorage.setItem("type", "teacher")
-
-          } else if (datas.data.dept === 3) {
+          } else if (datas.data.permission === 3) {
             sessionStorage.setItem("type", "student")
-          } else if (datas.data.dept === 4) {
+          } else if (datas.data.permission === 4) {
             sessionStorage.setItem("type", "user")
           }
           sessionStorage.setItem("age", datas.data.age)
-          sessionStorage.setItem("gender", datas.data.gender)
+          sessionStorage.setItem("sex", datas.data.sex)
           sessionStorage.setItem("username", datas.data.username)
-          sessionStorage.setItem("email", datas.data.email)
+          sessionStorage.setItem("phone", datas.data.phone)
           sessionStorage.setItem("registerTime", datas.data.registerTime)
           sessionStorage.setItem("lastModificationTime", datas.data.lastModificationTime)
 
         } else {
-          that.$message.error(datas.msg);
+          this.$message.error(datas.msg);
         }
       }
     }

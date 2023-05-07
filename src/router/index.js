@@ -1,11 +1,11 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import routes from "./routes";
-
+import Cookies from "js-cookie"
 Vue.use(VueRouter);
 
 const router = new VueRouter({
-	mode: 'history',//改为history模式，去除url里的#
+	mode: 'hash',//改为history模式，去除url里的#
 	routes
 });
 
@@ -14,11 +14,8 @@ router.beforeEach((to, from, next) => {
 	console.log("to")
 	console.log(to)
 	if (to.meta.requireAuth) { // 判断跳转的路由是否需要登录
-		if (sessionStorage.getItem('token')) { // vuex.state判断token是否存在,后台会校验是否过期
-			console.log(to.meta.roles)
-			console.log(sessionStorage.getItem("type"))
+		if (Cookies.get('tgc')) { // vuex.state判断token是否存在,后台会校验是否过期
 			if(to.meta.roles.includes(sessionStorage.getItem("type"))){
-
 				console.log("存在")
 				next()	//放行
 			}else{
